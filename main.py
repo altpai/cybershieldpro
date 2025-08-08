@@ -26,4 +26,4 @@ async def startup_event():
 # Health check
 @app.get("/")
 async def root():
-    return {"message": "Detection Service Runningman"}
+    return {"message": "Detection Service Running"}
