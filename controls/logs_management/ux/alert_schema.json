@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ALAR Schema",
+  "description": "Schema for Attack Location and Attribution Reporting",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "API key for authentication"
+    },
+    "window_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of the reporting window in ISO 8601 format"
+    },
+    "window_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of the reporting window in ISO 8601 format"
+    },
+    "users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "Unique identifier for the user"
+          },
+          "attacks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["ALERT", "WARNING", "CLEAR"],
+                  "description": "Status of the attack detection"
+                },
+                "risk_score": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Risk score for the attack"
+                },
+                "ip": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "ipv4"
+                  },
+                  "description": "IP addresses associated with the attack"
+                },
+                "device_fingerprint": {
+                  "type": "string",
+                  "description": "Fingerprint of the device used in the attack"
+                },
+                "event_timestamp": {
+                  "type": "integer",
+                  "description": "Unix timestamp of the attack event"
+                },
+                "detection_evidence": {
+                  "type": "object",
+                  "properties": {
+                    "failed_attempts": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/attempt" }
+                    },
+                    "successful_attempts": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/attempt" }
+                    },
+                    "ip_velocity": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/attempt" }
+                    },
+                    "device_reuse": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/attempt" }
+                    },
+                    "location_anomalies": {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/attempt" }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "native_narrative": {
+                  "type": "string",
+                  "description": "Human-readable description of the attack"
+                },
+                "recommendation": {
+                  "type": "string",
+                  "description": "Recommended action for the attack"
+                },
+                "localization_tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Tags for localization purposes"
+                }
+              },
+              "required": [
+                "status",
+                "risk_score",
+                "ip",
+                "device_fingerprint",
+                "event_timestamp",
+                "detection_evidence",
+                "native_narrative",
+                "recommendation"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["user_id", "attacks"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["key", "window_start", "window_end", "users"],
+  "additionalProperties": false,
+  "definitions": {
+    "attempt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the attempt"
+        },
+        "key": {
+          "type": "string",
+          "description": "API key associated with the attempt"
+        },
+        "user_id": {
+          "type": "string",
+          "description": "User ID associated with the attempt"
+        },
+        "ip": {
+          "type": "string",
+          "format": "ipv4",
+          "description": "IP address used in the attempt"
+        },
+        "device_fingerprint": {
+          "type": "string",
+          "description": "Device fingerprint used in the attempt"
+        },
+        "success": {
+          "type": "integer",
+          "enum": [0, 1],
+          "description": "Whether the attempt was successful (1) or not (0)"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Unix timestamp of the attempt"
+        },
+        "city": {
+          "type": ["string", "null"],
+          "description": "City associated with the IP"
+        },
+        "region": {
+          "type": ["string", "null"],
+          "description": "Region associated with the IP"
+        },
+        "country": {
+          "type": ["string", "null"],
+          "description": "Country associated with the IP"
+        },
+        "continent": {
+          "type": ["string", "null"],
+          "description": "Continent associated with the IP"
+        },
+        "postal_code": {
+          "type": ["string", "null"],
+          "description": "Postal code associated with the IP"
+        },
+        "timezone": {
+          "type": ["string", "null"],
+          "description": "Timezone associated with the IP"
+        },
+        "latitude": {
+          "type": ["number", "null"],
+          "description": "Latitude of the IP location"
+        },
+        "longitude": {
+          "type": ["number", "null"],
+          "description": "Longitude of the IP location"
+        },
+        "organization": {
+          "type": ["string", "null"],
+          "description": "Organization associated with the IP"
+        },
+        "asn": {
+          "type": ["integer", "null"],
+          "description": "Autonomous System Number associated with the IP"
+        },
+        "iso_country_code": {
+          "type": ["string", "null"],
+          "description": "ISO country code associated with the IP"
+        }
+      },
+      "required": [
+        "id",
+        "key",
+        "user_id",
+        "ip",
+        "device_fingerprint",
+        "success",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

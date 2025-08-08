@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Credential Stuffing Alert Schema",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["ALERT", "OK", "WARN"]
+    },
+    "risk_score": {
+      "type": "integer"
+    },
+    "key": {
+      "type": "string"
+    },
+    "window_start": {
+      "type": "integer"
+    },
+    "window_end": {
+      "type": "integer"
+    },
+    "users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          },
+          "risk_score": {
+            "type": "integer"
+          },
+          "attacks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["ALERT", "OK", "WARN"]
+                },
+                "risk_score": {
+                  "type": "integer"
+                },
+                "ip": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "ipv4"
+                  }
+                },
+                "device_fingerprint": {
+                  "type": "string"
+                },
+                "event_timestamp": {
+                  "type": "integer"
+                },
+                "detection_evidence": {
+                  "type": "object",
+                  "properties": {
+                    "failed_attempts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "user_id": { "type": "string" },
+                          "ip": { "type": "string", "format": "ipv4" },
+                          "device_fingerprint": { "type": "string" },
+                          "success": { "type": "integer", "enum": [0, 1] },
+                          "timestamp": { "type": "integer" },
+                          "key": { "type": "string" }
+                        },
+                        "required": ["user_id", "ip", "device_fingerprint", "success", "timestamp", "key"]
+                      }
+                    },
+                    "successful_attempts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/users/items/properties/attacks/items/properties/detection_evidence/properties/failed_attempts/items"
+                      }
+                    },
+                    "ip_velocity": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/users/items/properties/attacks/items/properties/detection_evidence/properties/failed_attempts/items"
+                      }
+                    },
+                    "device_reuse": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/users/items/properties/attacks/items/properties/detection_evidence/properties/failed_attempts/items"
+                      }
+                    }
+                  },
+                  "required": ["failed_attempts", "successful_attempts", "ip_velocity", "device_reuse"]
+                }
+              },
+              "required": ["status", "risk_score", "ip", "device_fingerprint", "event_timestamp", "detection_evidence"]
+            }
+          }
+        },
+        "required": ["user_id", "risk_score", "attacks"]
+      }
+    }
+  },
+  "required": ["status", "risk_score", "key", "window_start", "window_end", "users"]
+}

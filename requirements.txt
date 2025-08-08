@@ -1,4 +1,28 @@
-asgiref==3.9.1
-Django==5.2.5
-sqlparse==0.5.3
-typing_extensions==4.14.1
+# Web framework
+fastapi
+uvicorn
+
+# PostgreSQL driver
+psycopg2-binary
+
+# Data validation
+pydantic==2.7.1
+
+# Date parsing
+python-dateutil
+pytz
+
+# Async support (built-in in Python 3.7+, but including httpx for async HTTP if needed)
+httpx
+
+# Geopy for geodesic distance calculation
+geoip2
+
+# Testing and formatting tools
+pytest
+black
+
+# WebSocket support
+websockets
+
+geopy
